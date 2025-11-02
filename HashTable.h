@@ -34,6 +34,11 @@ class HashTable {
 
     size_t size() const;
 
+    //prints the contents of our hash table using normal syntax
+    //cout <<
+    //Should only print buckets which are occupied
+    //Each item will print which bucket the item is in
+    //Can make a printMe() helper method
     friend ostream& operator<<(ostream& os, const HashTable& hashtable) {
 
     }
@@ -49,8 +54,10 @@ class HashTableBucket {
 
     bool isEmpty() const;
 
-
+    //Print the bucket's contents
     friend ostream& operator<<(ostream& os, const HashTableBucket& hashtable) {
 
     }
+
 };
+
