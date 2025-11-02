@@ -14,7 +14,7 @@ public:
     enum bucketStatusEnum {Normal, EmptySinceStart, EmptyAfterRemoval};
     bucketStatusEnum bucketStatus;
     std::string key;
-    int value;
+    size_t value;
 
     HashTableBucket();
     HashTableBucket(string key, int value);
@@ -36,7 +36,6 @@ private:
     public:
     size_t initCapacity;
     string key;
-    size_t value;
     //variable for keeping the buckets
     size_t bucketCount;
     //vector for the buckets

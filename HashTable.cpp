@@ -11,10 +11,14 @@
 
 using namespace std;
 
-//constructor
+//constructor. sets the vectorTable to the initCapacity
+//and sets bucket count to 0
 HashTable::HashTable(size_t initCapacity) {
     this->initCapacity = initCapacity;
-    table.resize(initCapacity);
+    //vector function that changes the size of the vector to
+    //the initCapacity
+    vectorTable.resize(initCapacity);
+    bucketCount = 0;
 }
 
 //Inserts a new key-value pair into the table. Duplicate keys are
@@ -67,6 +71,8 @@ std::vector<string> HashTable::keys() const {
 //use cast to avoid integer division
 //ex. static_cast<double>(num)
 //the time complexity for this method must be O(1)
+//when this reaches or exceeds 0.5 it should double
+//the size of the vector
 double HashTable::alpha() const {
 
 }
