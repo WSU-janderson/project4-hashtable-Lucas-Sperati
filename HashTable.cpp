@@ -5,7 +5,8 @@
 #include "HashTable.h"
 #include <iostream>
 #include <exception>
-#include <stdexcept>
+#include <filesystem>
+
 
 using namespace std;
 
@@ -80,15 +81,21 @@ size_t HashTable::size() const {
 
 }
 
-//default constructor sets  bucket type to ESS
-HashTableBucket::HashTableBucket() {
+//---------------------------------------------------------
 
+//default constructor sets bucket type to ESS
+HashTableBucket::HashTableBucket() {
+    bucketStatus = EmptySinceStart;
+    key = "";
+    value = 0;
 }
 
 //parameterized constructor that initializes the key and value
 //and sets the bucket type to normal
 HashTableBucket::HashTableBucket(string key, int value) {
-
+    bucketStatus = Normal;
+    this->key = key;
+    this->value = value;
 }
 
 //Loads the key-value pair into the bucket, which should then

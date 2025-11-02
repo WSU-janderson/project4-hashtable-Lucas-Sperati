@@ -45,10 +45,11 @@ class HashTable {
 };
 
 class HashTableBucket {
-    public:
 
+    public:
     //the enum class to store the status's of the buckets
-    enum bucketStatus {Normal, EmptySinceStart, EmptyAfterRemoval};
+    enum bucketStatusEnum {Normal, EmptySinceStart, EmptyAfterRemoval};
+    bucketStatusEnum bucketStatus;
     std::string key;
     int value;
 
