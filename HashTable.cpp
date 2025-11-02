@@ -6,13 +6,15 @@
 #include <iostream>
 #include <exception>
 #include <filesystem>
+#include <vector>
 
 
 using namespace std;
 
 //constructor
 HashTable::HashTable(size_t initCapacity) {
-
+    this->initCapacity = initCapacity;
+    table.resize(initCapacity);
 }
 
 //Inserts a new key-value pair into the table. Duplicate keys are
@@ -61,7 +63,7 @@ std::vector<string> HashTable::keys() const {
 
 }
 
-//alpha returns the current suze of the table.
+//alpha returns the current size of the table.
 //use cast to avoid integer division
 //ex. static_cast<double>(num)
 //the time complexity for this method must be O(1)
@@ -101,11 +103,19 @@ HashTableBucket::HashTableBucket(string key, int value) {
 //Loads the key-value pair into the bucket, which should then
 //also mark the bucket as normal
 void HashTableBucket::load(string key, int value) {
-
+    bucketStatus = Normal;
+    this->key = key;
+    this->value = value;
 }
 
 //returns whether the bucket is empty, regardless of if has had
 //data placed in it or not
 bool HashTableBucket::isEmpty() const {
-
+    //if the bucket is ESS or EAR then returns true, else returns false
+    if (bucketStatus == EmptySinceStart || bucketStatus == EmptyAfterRemoval) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }

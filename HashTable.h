@@ -7,11 +7,42 @@
 #include <vector>
 using namespace std;
 
+class HashTableBucket {
+
+public:
+    //the enum class to store the status's of the buckets
+    enum bucketStatusEnum {Normal, EmptySinceStart, EmptyAfterRemoval};
+    bucketStatusEnum bucketStatus;
+    std::string key;
+    int value;
+
+    HashTableBucket();
+    HashTableBucket(string key, int value);
+
+    void load(string key, int value);
+
+    bool isEmpty() const;
+
+    //Print the bucket's contents
+    friend ostream& operator<<(ostream& os, const HashTableBucket& bucket) {
+
+    }
+
+};
+
 class HashTable {
+private:
+
     public:
     size_t initCapacity;
     string key;
     size_t value;
+    //variable for keeping the buckets
+    size_t bucketCount;
+    //vector for the buckets
+    std::vector<HashTableBucket> vectorTable;
+
+
 
     //parameterized constructor
     HashTable(size_t initCapacity = 8);
@@ -44,26 +75,5 @@ class HashTable {
     }
 };
 
-class HashTableBucket {
 
-    public:
-    //the enum class to store the status's of the buckets
-    enum bucketStatusEnum {Normal, EmptySinceStart, EmptyAfterRemoval};
-    bucketStatusEnum bucketStatus;
-    std::string key;
-    int value;
-
-    HashTableBucket();
-    HashTableBucket(string key, int value);
-
-    void load(string key, int value);
-
-    bool isEmpty() const;
-
-    //Print the bucket's contents
-    friend ostream& operator<<(ostream& os, const HashTableBucket& bucket) {
-
-    }
-
-};
 
