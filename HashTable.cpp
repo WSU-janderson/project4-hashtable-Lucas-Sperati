@@ -49,6 +49,18 @@ size_t HashTable::size() const {
 
 }
 
-friend ostream& operator<<(ostream& os, const HashTable& hashtable) {
+HashTableBucket::HashTableBucket() {
+
+}
+
+HashTableBucket::HashTableBucket(string key, int value) {
+
+}
+
+void HashTableBucket::load(string key, int value) {
+
+}
+
+bool HashTableBucket::isEmpty() const {
 
 }
