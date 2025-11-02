@@ -47,6 +47,11 @@ class HashTable {
 class HashTableBucket {
     public:
 
+    //the enum class to store the status's of the buckets
+    enum bucketStatus {Normal, EmptySinceStart, EmptyAfterRemoval};
+    std::string key;
+    int value;
+
     HashTableBucket();
     HashTableBucket(string key, int value);
 
@@ -55,7 +60,7 @@ class HashTableBucket {
     bool isEmpty() const;
 
     //Print the bucket's contents
-    friend ostream& operator<<(ostream& os, const HashTableBucket& hashtable) {
+    friend ostream& operator<<(ostream& os, const HashTableBucket& bucket) {
 
     }
 
