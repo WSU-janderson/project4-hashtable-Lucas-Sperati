@@ -15,6 +15,7 @@ using namespace std;
 //constructor. sets the vectorTable to the initCapacity
 //and sets bucket count to 0
 HashTable::HashTable(size_t initCapacity) {
+    srand(time(nullptr));
     this->initCapacity = initCapacity;
     //vector function that changes the size of the vector to
     //the initCapacity
@@ -59,14 +60,34 @@ size_t HashTable::probeEmpty(size_t keySum) {
 //attempted to be inserted, the method should return false.
 bool HashTable::insert(std::string key, size_t value) {
     size_t keySum = 0;
+    //for loop to get the hash of the key using the characters
     for (int j = 0; j < key.size(); j++) {
         //key[j] takes the character of key at j and adds its value to keySum
         keySum += key[j];
     }
-    size_t address = probeEmpty(keySum);
-    HashTableBucket bucket = this->vectorTable[address];
-    bucket.load(key, value);
-    return true;
+    //variable to keep track of initCapacity and probe with it
+    size_t initCapacityVar = this->initCapacity;
+    //for loop that probes through the vector. It gets a bucket, checks if its
+    //normal since it would have valid data and if the key matches the inserted key
+    for (size_t i = 0; i < initCapacityVar; i++) {
+        //gets the address using the offsets
+        size_t address = (keySum + offsets[i]) % initCapacityVar;
+        //gets that bucket and adds it to the variable bucket
+        HashTableBucket& bucket = vectorTable[address];
+
+        //if the status of that bucket is normal and the keys are the same it returns false
+        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+            return false;
+        }
+        //else if the bucket is empty it loads the key and the value and returns true, and it increases
+        //bucketCount by one
+        if (bucket.isEmpty()) {
+            bucket.load(key, value);
+            bucketCount = bucketCount + 1; // track how many key-value pairs exist
+            return true;
+        }
+    }
+    return false;
 }
 
 //If the key is in the table, remove will "erase" the key-value
