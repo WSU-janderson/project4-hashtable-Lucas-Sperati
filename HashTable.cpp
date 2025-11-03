@@ -97,7 +97,42 @@ bool HashTable::insert(std::string key, size_t value) {
 //If the key is in the table, remove will "erase" the key-value
 //pair from the table. Marks a bucket as empty-after-remove
 bool HashTable::remove(std::string key) {
+    size_t keySum = 0;
+    //for loop to get the hash of the key using the characters
+    for (int j = 0; j < key.size(); j++) {
+        //key[j] takes the character of key at j and adds its value to keySum
+        keySum += key[j];
+    }
+    //variable for the initCapacity
+    size_t initCapacityVar = this->initCapacity;
+    //checks if there is a full bucket in the vector, if there isn't it returns false
+    size_t bucketTest = probeFull(keySum);
+    if (bucketTest == initCapacityVar) {
+        return false;
+    }
 
+    //if there is a full bucket then it will probe for the key
+    for (size_t i = 0; i < initCapacityVar; i++) {
+        //gets usualy bucket stuff for probing
+        size_t address = (keySum + offsets[i]) % initCapacity;
+        HashTableBucket& bucket = vectorTable[address];
+
+        //if the bucket is normal and the key matches
+        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+            //sets the key to null
+            bucket.key = "";
+            //sets the value to 0
+            bucket.value = 0;
+            //sets the status to EAR
+            bucket.bucketStatus = HashTableBucket::EmptyAfterRemoval;
+            //decreases the bucket count by one
+            bucketCount = bucketCount - 1;
+            //if it works it returns true
+            return true;
+        }
+    }
+    //if the key is never found then it returns false
+    return false;
 }
 
 //returns true if the key is in the table and false if the key
