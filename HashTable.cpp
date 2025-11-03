@@ -137,7 +137,7 @@ bool HashTable::remove(std::string key) {
 
 //returns true if the key is in the table and false if the key
 //is not in the table
-bool HashTable::contains(std::string& key) const {
+bool HashTable::contains(const std::string& key) const {
     size_t keySum = 0;
     //for loop to get the hash of the key using the characters
     for (int j = 0; j < key.size(); j++) {
@@ -163,9 +163,30 @@ bool HashTable::contains(std::string& key) const {
 //if the key is found in the table, will return the value
 //associated with that key. If the key is not in the table, will
 //return nullopt. The find method returns an optional<int>.
+//basically same code from contains
 std::optional<int> HashTable::get(const string& key) const {
+    size_t keySum = 0;
+    //for loop to get the hash of the key using the characters
+    for (int j = 0; j < key.size(); j++) {
+        //key[j] takes the character of key at j and adds its value to keySum
+        keySum += key[j];
+    }
+    //variable for the initCapacity
+    size_t initCapacityVar = this->initCapacity;
 
+    //same ol same ol for probing.
+    for (size_t i = 0; i < initCapacityVar; i++) {
+        size_t address = (keySum + offsets[i]) % initCapacityVar;
+        const HashTableBucket& bucket = vectorTable[address];
+        //if the bucket is normal and the keys are the same then it returns true
+        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+            return bucket.value;
+        }
+    }
+    //returns false if the bucket is not found
+    return nullopt;
 }
+
 
 //access values in the map using a familiar syntax.
 //for ex. int idNum = hashTable["james]"

@@ -53,7 +53,7 @@ private:
 
     bool remove(std::string key);
 
-    bool contains(std::string& key) const;
+    bool contains(const std::string& key) const;
 
     optional<int> get(const string& key) const;
 
