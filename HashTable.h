@@ -67,7 +67,7 @@ private:
 
     size_t size() const;
 
-    size_t probeEmpty(size_t keySum);
+    size_t probeFull(size_t keySum);
 
     //prints the contents of our hash table using normal syntax
     //cout <<

@@ -38,22 +38,26 @@ HashTable::HashTable(size_t initCapacity) {
     }
 }
 
-//uses offsets to probe the table checking for empty buckets
-size_t HashTable::probeEmpty(size_t keySum) {
+//uses offsets to probe the table checking for full buckets
+size_t HashTable::probeFull(size_t keySum) {
     //gets the initCapacity
     size_t initCapacityVar = this->initCapacity;
-    //gets the first random bucket
-    size_t randomBucket = keySum + offsets[0] % initCapacityVar;
-    //checks each other randomBucket until you find one that is empty
-     for (size_t i = 1; !this->vectorTable[randomBucket].isEmpty(); i++) {
-         //sets the randomBucket to the next offset
-        randomBucket = keySum + offsets[i] % initCapacityVar;
-    }
-    //once found, returns randomBucket
-    return randomBucket;
+    //i to avoid infinite loops
+    size_t i = 0;
+    //runs for however long initCapacityVar is
+    while (i < initCapacityVar) {
+        //gets the bucket
+        size_t bucket = (keySum + offsets[i]) % initCapacityVar;
+        //if the bucket is normal then it returns that bucket
+        if (vectorTable[bucket].bucketStatus == HashTableBucket::Normal) {
+            return bucket;
+        }
+        ++i;
+    }//returns initCapacityVar if nothing is found
+    return initCapacityVar;
 }
 
-//todo
+//todo add alpha and resize later
 //Inserts a new key-value pair into the table. Duplicate keys are
 //not allowed. The method should return true if the insertion was successful.
 //If the insert was unsuccessful, such as when a duplicate is
