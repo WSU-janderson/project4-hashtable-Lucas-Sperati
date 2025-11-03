@@ -52,7 +52,7 @@ size_t HashTable::probeEmpty(size_t keySum) {
     return randomBucket;
 }
 
-
+//todo
 //Inserts a new key-value pair into the table. Duplicate keys are
 //not allowed. The method should return true if the insertion was successful.
 //If the insert was unsuccessful, such as when a duplicate is
@@ -63,6 +63,10 @@ bool HashTable::insert(std::string key, size_t value) {
         //key[j] takes the character of key at j and adds its value to keySum
         keySum += key[j];
     }
+    size_t address = probeEmpty(keySum);
+    HashTableBucket bucket = this->vectorTable[address];
+    bucket.load(key, value);
+    return true;
 }
 
 //If the key is in the table, remove will "erase" the key-value
@@ -96,14 +100,21 @@ int& HashTable::operator[](const string& key) {
 
 }
 
+//todo
 //key returns a std::vector with all of the keys currently in the table.
 //The length of the vector should be the same as the size of the hash
 //table
 std::vector<string> HashTable::keys() const {
+    std::vector<string> keys;
 
+    for (size_t i = 0; i < initCapacity; i++) {
+        if (!vectorTable.empty()) {
+            //keys.push_back(vectorTable[i]);
+        }
+    }
+    return keys;
 }
 
-//alpha returns the current size of the table.
 //use cast to avoid integer division
 //ex. static_cast<double>(num)
 //the time complexity for this method must be O(1)
@@ -119,7 +130,7 @@ size_t HashTable::capacity() const {
 
 }
 
-//Suze returns how many key-value pairs are in the hash table
+//Size returns how many key-value pairs are in the hash table
 //Time complexity must be O(1)
 size_t HashTable::size() const {
 
