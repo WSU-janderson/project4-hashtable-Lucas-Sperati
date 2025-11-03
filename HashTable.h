@@ -40,6 +40,9 @@ private:
     size_t bucketCount;
     //vector for the buckets
     std::vector<HashTableBucket> vectorTable;
+    //vector for the random number offsets
+    std::vector<size_t> offsets;
+
 
 
 
@@ -63,6 +66,8 @@ private:
     size_t capacity() const;
 
     size_t size() const;
+
+    size_t probeEmpty(size_t keySum);
 
     //prints the contents of our hash table using normal syntax
     //cout <<
