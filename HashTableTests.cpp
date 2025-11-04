@@ -60,7 +60,7 @@ void memoryLeakTest();
 
 // main
 int main(int argc, char* argv[]) {
-    constexpr size_t MAXHASH = HashTable::DEFAULT_INITIAL_CAPACITY;
+    constexpr size_t MAXHASH = 8;
 
 #ifdef GRADING
 	ofstream OUTSTREAM("evals/" + evalName + "_eval.txt");

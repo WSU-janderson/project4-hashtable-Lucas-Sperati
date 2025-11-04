@@ -104,7 +104,8 @@ private:
                     valueVar = currentBucket.value;
                     indexVar = address;
                     os << "Bucket " << indexVar << ": <" << currentKey << ", " << valueVar << ">" << endl;
-
+                    //break if bucket found
+                    break;
                 }
             }
         }

@@ -64,8 +64,83 @@ size_t HashTable::probeFull(size_t keySum) {
 //attempted to be inserted, the method should return false.
 bool HashTable::insert(std::string key, size_t value) {
     if (alpha() >= 0.5) {
+        bool bucketFound = false;
+        std::vector<HashTableBucket> oldList;
+        std::vector<size_t> oldOffsets;
+        std::vector<string> oldKeys;
+        std::vector<size_t> newNums;
+        //initCapacity var
+        size_t initCapacityVar = this->initCapacity;
+        //makes a deep copy and adds old elements into oldList
+        oldList = vectorTable;
+        //makes a deep copy of offsets and adds them to oldOffsets
+        oldOffsets = offsets;
+        //gets the keys and sets them to oldKeys
+        oldKeys = this->keys();
+        //variable for the old InitCapacity
+        size_t oldInitCapacityVar = initCapacity;
+        //makes initCapacity twice as big
+        initCapacity = initCapacity * 2;
+        initCapacityVar = initCapacity;
+        //resizes vectorTable to the new initCapacity
+        vectorTable.resize(initCapacity);
+        offsets.resize(initCapacity);
+        vectorTable.clear();
+        offsets.clear();
+        bucketCount = 0;
 
+        //makes the new offsets vector
+        //makes the temp vector however big initCapacity is - 1 since you don't include
+        //0 or the capacity
+        for (size_t i = 0; i < initCapacity; i++) {
+            newNums.push_back(i);
+        }
+        //randomly adds all values from the newNums vector to offsets and then erases tempVector
+        //% tempVector.size() since tempVector gets deleted and won't match the initCapacity
+        for (size_t i = 0; i < initCapacity; i++) {
+            offsets.push_back(newNums[rand() % newNums.size()]);
+            newNums.erase(newNums.begin() + rand() % newNums.size());
+        }
+
+
+        //for loop that goes through each key
+        for (std::string curKey : oldKeys) {
+            //new hash function
+            size_t keySum = 0;
+            //for loop to get the hash of the key using the characters
+            for (int j = 0; j < curKey.size(); j++) {
+                //key[j] takes the character of key at j and adds its value to keySum
+                keySum += curKey[j];
+            }
+            //for the size of the new initCapacity it gets the bucket
+            for (size_t i = 0; i < oldInitCapacityVar; i++) {
+                //gets the address using the offsets
+                size_t address = (keySum + oldOffsets[i]) % oldInitCapacityVar;
+                //gets that bucket and adds it to the variable bucket
+                HashTableBucket& bucket = oldList[address];
+
+                //if the keys are the same then probes newList
+                if (bucket.key == curKey) {
+                    //probe newList for where this key goes with new offsets
+                    for (size_t j = 0; j < initCapacityVar; j++) {
+                        size_t addressNew = (keySum + offsets[j]) % initCapacityVar;
+                        HashTableBucket& newBucket = vectorTable[addressNew];
+                        if (newBucket.isEmpty()) {
+                            newBucket.load(bucket.key, bucket.value);
+                            bucketCount = bucketCount + 1; // track how many key-value pairs exist
+                            bucketFound = true;
+                            break;
+                        }
+                    }
+                }
+                if (bucketFound == true) {
+                    break;
+                }
+            }
+            bucketFound = false;
+        }
     }
+
 
     size_t keySum = 0;
     //for loop to get the hash of the key using the characters
@@ -117,7 +192,7 @@ bool HashTable::remove(std::string key) {
 
     //if there is a full bucket then it will probe for the key
     for (size_t i = 0; i < initCapacityVar; i++) {
-        //gets usualy bucket stuff for probing
+        //gets bucket stuff for probing
         size_t address = (keySum + offsets[i]) % initCapacity;
         HashTableBucket& bucket = vectorTable[address];
 
