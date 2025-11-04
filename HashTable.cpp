@@ -49,7 +49,7 @@ size_t HashTable::probeFull(size_t keySum) {
         //gets the bucket
         size_t bucket = (keySum + offsets[i]) % initCapacityVar;
         //if the bucket is normal then it returns that bucket
-        if (vectorTable[bucket].bucketStatus == HashTableBucket::Normal) {
+        if (vectorTable[bucket].bucketStatus == bucketStatusEnum::Normal) {
             return bucket;
         }
         ++i;
@@ -84,7 +84,7 @@ bool HashTable::insert(std::string key, size_t value) {
         HashTableBucket& bucket = vectorTable[address];
 
         //if the status of that bucket is normal and the keys are the same it returns false
-        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+        if (bucket.bucketStatus == bucketStatusEnum::Normal && bucket.key == key) {
             return false;
         }
         //else if the bucket is empty it loads the key and the value and returns true, and it increases
@@ -122,13 +122,13 @@ bool HashTable::remove(std::string key) {
         HashTableBucket& bucket = vectorTable[address];
 
         //if the bucket is normal and the key matches
-        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+        if (bucket.bucketStatus == bucketStatusEnum::Normal && bucket.key == key) {
             //sets the key to null
             bucket.key = "";
             //sets the value to 0
             bucket.value = 0;
             //sets the status to EAR
-            bucket.bucketStatus = HashTableBucket::EmptyAfterRemoval;
+            bucket.bucketStatus = bucketStatusEnum::EmptyAfterRemoval;
             //decreases the bucket count by one
             bucketCount = bucketCount - 1;
             //if it works it returns true
@@ -156,7 +156,7 @@ bool HashTable::contains(const std::string& key) const {
         size_t address = (keySum + offsets[i]) % initCapacityVar;
         const HashTableBucket& bucket = vectorTable[address];
         //if the bucket is normal and the keys are the same then it returns true
-        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+        if (bucket.bucketStatus == bucketStatusEnum::Normal && bucket.key == key) {
             return true;
         }
     }
@@ -183,7 +183,7 @@ std::optional<int> HashTable::get(const string& key) const {
         size_t address = (keySum + offsets[i]) % initCapacityVar;
         const HashTableBucket& bucket = vectorTable[address];
         //if the bucket is normal and the keys are the same then it returns true
-        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+        if (bucket.bucketStatus == bucketStatusEnum::Normal && bucket.key == key) {
             return bucket.value;
         }
     }
@@ -216,7 +216,7 @@ size_t& HashTable::operator[](const string& key) {
         size_t address = (keySum + offsets[i]) % initCapacityVar;
         HashTableBucket& bucket = vectorTable[address];
         //if the bucket is normal and the keys are the same then it returns true
-        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+        if (bucket.bucketStatus == bucketStatusEnum::Normal && bucket.key == key) {
             return bucket.value;
         }
     }
@@ -234,7 +234,7 @@ std::vector<string> HashTable::keys() const {
         //adds each bucket to the bucket variable
         const HashTableBucket& bucket = vectorTable[i];
         //if the bucket is normal then it adds the key to the keys vector
-        if (bucket.bucketStatus == HashTableBucket::Normal) {
+        if (bucket.bucketStatus == bucketStatusEnum::Normal) {
             keys.push_back(bucket.key);
         }
     }
@@ -273,7 +273,7 @@ size_t HashTable::size() const {
 
 //default constructor sets bucket type to ESS
 HashTableBucket::HashTableBucket() {
-    bucketStatus = EmptySinceStart;
+    bucketStatus = bucketStatusEnum::EmptySinceStart;
     key = "";
     value = 0;
 }
@@ -281,7 +281,7 @@ HashTableBucket::HashTableBucket() {
 //parameterized constructor that initializes the key and value
 //and sets the bucket type to normal
 HashTableBucket::HashTableBucket(string key, int value) {
-    bucketStatus = Normal;
+    bucketStatus = bucketStatusEnum::Normal;
     this->key = key;
     this->value = value;
 }
@@ -289,7 +289,7 @@ HashTableBucket::HashTableBucket(string key, int value) {
 //Loads the key-value pair into the bucket, which should then
 //also mark the bucket as normal
 void HashTableBucket::load(string key, int value) {
-    bucketStatus = Normal;
+    bucketStatus = bucketStatusEnum::Normal;
     this->key = key;
     this->value = value;
 }
@@ -298,7 +298,7 @@ void HashTableBucket::load(string key, int value) {
 //data placed in it or not
 bool HashTableBucket::isEmpty() const {
     //if the bucket is ESS or EAR then returns true, else returns false
-    if (bucketStatus == EmptySinceStart || bucketStatus == EmptyAfterRemoval) {
+    if (bucketStatus == bucketStatusEnum::EmptySinceStart || bucketStatus == bucketStatusEnum::EmptyAfterRemoval) {
         return true;
     }
     else {

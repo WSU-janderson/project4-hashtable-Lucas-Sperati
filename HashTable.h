@@ -7,11 +7,12 @@
 #include <vector>
 using namespace std;
 
+//the enum class to store the status's of the buckets
+enum class bucketStatusEnum {Normal, EmptySinceStart, EmptyAfterRemoval};
+
 class HashTableBucket {
 
 public:
-    //the enum class to store the status's of the buckets
-    enum bucketStatusEnum {Normal, EmptySinceStart, EmptyAfterRemoval};
     bucketStatusEnum bucketStatus;
     std::string key;
     size_t value;
@@ -75,7 +76,18 @@ private:
     //Each item will print which bucket the item is in
     //Can make a printMe() helper method
     friend ostream& operator<<(ostream& os, const HashTable& hashtable) {
+        //sets the keys vector to the bucketList since keys already has the filled buckets
+        //clion auto generated it
+        std:vector<std::string> bucketList = hashtable.keys();
+        //variables for keeping track of the index and value
+        size_t valueVar = 0;
+        size_t indexVar  = 0;
+        for (size_t i = 0; i < bucketList.size(); i++) {
+            //gets bucket key
+            std::string currentBucket = bucketList[i];
 
+
+        }
     }
 };
 
