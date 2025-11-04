@@ -63,6 +63,10 @@ size_t HashTable::probeFull(size_t keySum) {
 //If the insert was unsuccessful, such as when a duplicate is
 //attempted to be inserted, the method should return false.
 bool HashTable::insert(std::string key, size_t value) {
+    if (alpha() >= 0.5) {
+
+    }
+
     size_t keySum = 0;
     //for loop to get the hash of the key using the characters
     for (int j = 0; j < key.size(); j++) {
@@ -187,7 +191,7 @@ std::optional<int> HashTable::get(const string& key) const {
     return nullopt;
 }
 
-//todo dont work i don't think
+
 //access values in the map using a familiar syntax.
 //for ex. int idNum = hashTable["james]"
 //unlike get the bracker operator returns a reference to the value,
@@ -197,7 +201,7 @@ std::optional<int> HashTable::get(const string& key) const {
 //impossible. Do not need to address attempts to
 //access keys not in the table inside the bracket operator method.
 //stole code from get to make this
-int& HashTable::operator[](const string& key) {
+size_t& HashTable::operator[](const string& key) {
     size_t keySum = 0;
     //for loop to get the hash of the key using the characters
     for (int j = 0; j < key.size(); j++) {
@@ -210,12 +214,13 @@ int& HashTable::operator[](const string& key) {
     //same ol same ol for probing.
     for (size_t i = 0; i < initCapacityVar; i++) {
         size_t address = (keySum + offsets[i]) % initCapacityVar;
-        const HashTableBucket& bucket = vectorTable[address];
+        HashTableBucket& bucket = vectorTable[address];
         //if the bucket is normal and the keys are the same then it returns true
         if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
-            //return bucket.value;
+            return bucket.value;
         }
     }
+
 }
 
 

@@ -57,7 +57,7 @@ private:
 
     optional<int> get(const string& key) const;
 
-    int& operator[](const string& key);
+    size_t& operator[](const string& key);
 
     vector<string> keys() const;
 
