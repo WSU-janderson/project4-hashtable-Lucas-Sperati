@@ -187,7 +187,7 @@ std::optional<int> HashTable::get(const string& key) const {
     return nullopt;
 }
 
-
+//todo dont work i don't think
 //access values in the map using a familiar syntax.
 //for ex. int idNum = hashTable["james]"
 //unlike get the bracker operator returns a reference to the value,
@@ -196,9 +196,28 @@ std::optional<int> HashTable::get(const string& key) const {
 //If the key is not in the table, returning a valid reference is
 //impossible. Do not need to address attempts to
 //access keys not in the table inside the bracket operator method.
+//stole code from get to make this
 int& HashTable::operator[](const string& key) {
+    size_t keySum = 0;
+    //for loop to get the hash of the key using the characters
+    for (int j = 0; j < key.size(); j++) {
+        //key[j] takes the character of key at j and adds its value to keySum
+        keySum += key[j];
+    }
+    //variable for the initCapacity
+    size_t initCapacityVar = this->initCapacity;
 
+    //same ol same ol for probing.
+    for (size_t i = 0; i < initCapacityVar; i++) {
+        size_t address = (keySum + offsets[i]) % initCapacityVar;
+        const HashTableBucket& bucket = vectorTable[address];
+        //if the bucket is normal and the keys are the same then it returns true
+        if (bucket.bucketStatus == HashTableBucket::Normal && bucket.key == key) {
+            //return bucket.value;
+        }
+    }
 }
+
 
 //todo
 //key returns a std::vector with all of the keys currently in the table.
