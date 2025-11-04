@@ -219,18 +219,21 @@ int& HashTable::operator[](const string& key) {
 }
 
 
-//todo
 //key returns a std::vector with all of the keys currently in the table.
 //The length of the vector should be the same as the size of the hash
 //table
 std::vector<string> HashTable::keys() const {
+    //makes a temp vector of keys
     std::vector<string> keys;
-
     for (size_t i = 0; i < initCapacity; i++) {
-        if (!vectorTable.empty()) {
-            //keys.push_back(vectorTable[i]);
+        //adds each bucket to the bucket variable
+        const HashTableBucket& bucket = vectorTable[i];
+        //if the bucket is normal then it adds the key to the keys vector
+        if (bucket.bucketStatus == HashTableBucket::Normal) {
+            keys.push_back(bucket.key);
         }
     }
+    //finally returns the key
     return keys;
 }
 
