@@ -5,6 +5,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <bits/locale_facets_nonio.h>
 using namespace std;
 
 //the enum class to store the status's of the buckets
@@ -23,11 +24,6 @@ public:
     void load(string key, int value);
 
     bool isEmpty() const;
-
-    //Print the bucket's contents
-    friend ostream& operator<<(ostream& os, const HashTableBucket& bucket) {
-
-    }
 
 };
 
@@ -70,6 +66,7 @@ private:
 
     size_t probeFull(size_t keySum);
 
+    //todo
     //prints the contents of our hash table using normal syntax
     //cout <<
     //Should only print buckets which are occupied
@@ -84,10 +81,34 @@ private:
         size_t indexVar  = 0;
         for (size_t i = 0; i < bucketList.size(); i++) {
             //gets bucket key
-            std::string currentBucket = bucketList[i];
+            std::string currentKey = bucketList[i];
 
+            size_t keySum = 0;
+            //for loop to get the hash of the key using the characters
+            for (int j = 0; j < currentKey.size(); j++) {
+                //key[j] takes the character of key at j and adds its value to keySum
+                keySum += currentKey[j];
+            }
+            //variable to keep track of initCapacity and probe with it
+            size_t initCapacityVar = hashtable.initCapacity;
+            //for loop that probes through the vector. It gets a bucket, checks if its
+            //normal since it would have valid data and if the key matches the inserted key
+            for (size_t i = 0; i < initCapacityVar; i++) {
+                //gets the address using the offsets
+                size_t address = (keySum + hashtable.offsets[i]) % initCapacityVar;
+                //gets that bucket and adds it to the variable bucket
+                vector<HashTableBucket>::value_type currentBucket = hashtable.vectorTable[address];
 
+                //if the status of that bucket is normal and the keys are the same it returns false
+                if (currentBucket.bucketStatus == bucketStatusEnum::Normal && currentBucket.key == currentKey) {
+                    valueVar = currentBucket.value;
+                    indexVar = address;
+                    os << "Bucket " << indexVar << ": <" << currentKey << ", " << valueVar << ">" << endl;
+
+                }
+            }
         }
+        return os;
     }
 };
 
