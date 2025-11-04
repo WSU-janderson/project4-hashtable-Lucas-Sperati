@@ -243,7 +243,13 @@ std::vector<string> HashTable::keys() const {
 //when this reaches or exceeds 0.5 it should double
 //the size of the vector
 double HashTable::alpha() const {
-
+    //gets the bucketCount and initCapacity and sets them to variables using static_cast
+    //and the divides them to get the alpha value and returns alpha
+    double alpha = 0;
+    double bucketCountVar = static_cast<double>(bucketCount);
+    double capacityVar = static_cast<double>(initCapacity);
+    alpha = bucketCountVar / capacityVar;
+    return alpha;
 }
 
 //capacity returns how many buckets in total are in the hash table.
