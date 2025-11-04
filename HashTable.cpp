@@ -255,13 +255,13 @@ double HashTable::alpha() const {
 //capacity returns how many buckets in total are in the hash table.
 //The time complexity for this must be O(1)
 size_t HashTable::capacity() const {
-
+    return initCapacity;
 }
 
 //Size returns how many key-value pairs are in the hash table
 //Time complexity must be O(1)
 size_t HashTable::size() const {
-
+    return bucketCount;
 }
 
 //---------------------------------------------------------
