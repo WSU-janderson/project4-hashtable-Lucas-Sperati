@@ -52,94 +52,88 @@ size_t HashTable::probeFull(size_t keySum) {
         if (vectorTable[bucket].bucketStatus == bucketStatusEnum::Normal) {
             return bucket;
         }
-        ++i;
+        i++;
     }//returns initCapacityVar if nothing is found
     return initCapacityVar;
 }
 
-//todo add alpha and resize later
+
 //Inserts a new key-value pair into the table. Duplicate keys are
 //not allowed. The method should return true if the insertion was successful.
 //If the insert was unsuccessful, such as when a duplicate is
 //attempted to be inserted, the method should return false.
 bool HashTable::insert(std::string key, size_t value) {
     if (alpha() >= 0.5) {
-        bool bucketFound = false;
-        std::vector<HashTableBucket> oldList;
-        std::vector<size_t> oldOffsets;
-        std::vector<string> oldKeys;
-        std::vector<size_t> newNums;
-        //initCapacity var
-        size_t initCapacityVar = this->initCapacity;
-        //makes a deep copy and adds old elements into oldList
-        oldList = vectorTable;
-        //makes a deep copy of offsets and adds them to oldOffsets
-        oldOffsets = offsets;
-        //gets the keys and sets them to oldKeys
-        oldKeys = this->keys();
-        //variable for the old InitCapacity
-        size_t oldInitCapacityVar = initCapacity;
-        //makes initCapacity twice as big
+        //backs up the old vector by setting the table, offsets, keys, and initial
+        //capacity to old variables
+        std::vector<HashTableBucket> oldList = vectorTable;
+        std::vector<size_t> oldOffsets = offsets;
+        std::vector<std::string> oldKeys = this->keys();
+        size_t oldInitCapacity = initCapacity;
+
+        //increases the size of the table by 2
         initCapacity = initCapacity * 2;
-        initCapacityVar = initCapacity;
-        //resizes vectorTable to the new initCapacity
-        vectorTable.resize(initCapacity);
-        offsets.resize(initCapacity);
+        //clears the old vectorTable
         vectorTable.clear();
+        //resizes the vector table to the new size
+        vectorTable.resize(initCapacity);
+        //clears the offsets
         offsets.clear();
+        //sets bucket count back to 0
         bucketCount = 0;
 
-        //makes the new offsets vector
-        //makes the temp vector however big initCapacity is - 1 since you don't include
-        //0 or the capacity
+
+        //makes a newNums vector with the initCapacity
+        std::vector<size_t> newNums(initCapacity);
+        //adds numbers to the new size to newNums
         for (size_t i = 0; i < initCapacity; i++) {
-            newNums.push_back(i);
+            newNums[i] = i;
         }
-        //randomly adds all values from the newNums vector to offsets and then erases tempVector
-        //% tempVector.size() since tempVector gets deleted and won't match the initCapacity
+        //randomly adds the new numbers to offsets and then removes the newNums vector
         for (size_t i = 0; i < initCapacity; i++) {
-            offsets.push_back(newNums[rand() % newNums.size()]);
-            newNums.erase(newNums.begin() + rand() % newNums.size());
+            size_t numberVar = rand() % newNums.size();
+            offsets.push_back(newNums[numberVar]);
+            newNums.erase(newNums.begin() + numberVar);
         }
 
-
-        //for loop that goes through each key
-        for (std::string curKey : oldKeys) {
-            //new hash function
+        //runs the hash for the new table
+        for (const std::string& key : oldKeys) {//O(n^3)
             size_t keySum = 0;
-            //for loop to get the hash of the key using the characters
-            for (int j = 0; j < curKey.size(); j++) {
+            for (int j = 0; j < key.size(); j++) {
                 //key[j] takes the character of key at j and adds its value to keySum
-                keySum += curKey[j];
+                keySum += key[j];
             }
-            //for the size of the new initCapacity it gets the bucket
-            for (size_t i = 0; i < oldInitCapacityVar; i++) {
-                //gets the address using the offsets
-                size_t address = (keySum + oldOffsets[i]) % oldInitCapacityVar;
-                //gets that bucket and adds it to the variable bucket
-                HashTableBucket& bucket = oldList[address];
 
-                //if the keys are the same then probes newList
-                if (bucket.key == curKey) {
-                    //probe newList for where this key goes with new offsets
-                    for (size_t j = 0; j < initCapacityVar; j++) {
-                        size_t addressNew = (keySum + offsets[j]) % initCapacityVar;
+            //this for loop gets the old bucket with that key
+            for (size_t i = 0; i < oldInitCapacity; i++) {//o(n^2)
+                size_t address = (keySum + oldOffsets[i]) % oldInitCapacity;
+                HashTableBucket& bucket = oldList[address];
+                if (bucket.key == key) {
+                    //adds the bucket to the new vector
+                    //uses j since i is used
+                    for (size_t j = 0; j < initCapacity; j++) { //o(n)
+                        size_t addressNew = (keySum + offsets[j]) % initCapacity;
                         HashTableBucket& newBucket = vectorTable[addressNew];
+                        //double checks to make sure the bucket is empty
                         if (newBucket.isEmpty()) {
                             newBucket.load(bucket.key, bucket.value);
-                            bucketCount = bucketCount + 1; // track how many key-value pairs exist
-                            bucketFound = true;
+                            bucketCount++;
                             break;
                         }
-                    }
-                }
-                if (bucketFound == true) {
+                    }//breaks once it gets done with key twice and goes back to the for each key loop
                     break;
                 }
             }
-            bucketFound = false;
         }
     }
+
+    //changes made to insert from when it was fucked:
+    //changed the rand offset function. I'm pretty sure it was originally randomly adding and removing elements so it would
+    //never end.
+    //The offset vector was accidentally resizing to the new length and then pushing back values afterward which made it too big
+    //got that from watching youtube videos and decided to change, forgot to push between changing the rand and changing the
+    //offset vector. I don't know which solved the infinite loop but I have 8 minutes left to turn this in so I don't have
+    //time to test it.
 
 
     size_t keySum = 0;
@@ -178,7 +172,7 @@ bool HashTable::insert(std::string key, size_t value) {
 bool HashTable::remove(std::string key) {
     size_t keySum = 0;
     //for loop to get the hash of the key using the characters
-    for (int j = 0; j < key.size(); j++) {
+    for (int j = 0; j < key.size(); j++) {//O(n)
         //key[j] takes the character of key at j and adds its value to keySum
         keySum += key[j];
     }
@@ -191,7 +185,7 @@ bool HashTable::remove(std::string key) {
     }
 
     //if there is a full bucket then it will probe for the key
-    for (size_t i = 0; i < initCapacityVar; i++) {
+    for (size_t i = 0; i < initCapacityVar; i++) { //O(n)
         //gets bucket stuff for probing
         size_t address = (keySum + offsets[i]) % initCapacity;
         HashTableBucket& bucket = vectorTable[address];
